@@ -1,6 +1,6 @@
 #!/bin/bash
 
-walletCnt=20
+walletCnt=30
 counter=0
 
 while [ $counter -le $walletCnt ]
