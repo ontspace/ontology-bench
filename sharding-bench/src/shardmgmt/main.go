@@ -6,7 +6,7 @@ import (
 	sdk "github.com/ontio/ontology-go-sdk"
 	"github.com/ontio/ontology-go-sdk/client"
 	"github.com/ontio/ontology/common/log"
-	"github.com/ontspace/ontology-bench/config"
+	"github.com/ontspace/ontology-bench/sharding-bench/src/config"
 )
 
 const (
