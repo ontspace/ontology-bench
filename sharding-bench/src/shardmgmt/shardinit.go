@@ -8,7 +8,7 @@ import (
 	"github.com/ontio/ontology/common/log"
 	"github.com/ontio/ontology/smartcontract/service/native/shardmgmt"
 	"github.com/ontio/ontology/smartcontract/service/native/utils"
-	"github.com/ontspace/ontology-bench/config"
+	"github.com/ontspace/ontology-bench/sharding-bench/src/config"
 )
 
 func ShardInit(sdk *sdk.OntologySdk, cfg *config.Config, user *sdk.Account) error {
