@@ -3,14 +3,15 @@ package config
 import (
 	"encoding/hex"
 	"fmt"
-	"github.com/dexServer/log"
-	"github.com/ontio/ontology-crypto/keypair"
-	goSdk "github.com/ontio/ontology-go-sdk"
-	"github.com/ontio/ontology/common"
-	"github.com/ontio/ontology/core/types"
 	"io/ioutil"
 	"strings"
 	"time"
+
+	"github.com/ontio/ontology-crypto/keypair"
+	goSdk "github.com/ontio/ontology-go-sdk"
+	"github.com/ontio/ontology/common"
+	"github.com/ontio/ontology/common/log"
+	"github.com/ontio/ontology/core/types"
 )
 
 const (

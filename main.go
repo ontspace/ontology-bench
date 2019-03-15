@@ -3,15 +3,16 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"math"
+	"os"
+	"time"
+
 	goSdk "github.com/ontio/ontology-go-sdk"
 	"github.com/ontio/ontology-go-sdk/client"
 	"github.com/ontio/ontology-go-sdk/utils"
 	"github.com/ontio/ontology/common"
 	"github.com/ontio/ontology/common/log"
 	"github.com/ontspace/ontology-bench/config"
-	"math"
-	"os"
-	"time"
 )
 
 const (
