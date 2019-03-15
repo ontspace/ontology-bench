@@ -1,7 +1,7 @@
 #!/bin/bash
 
 walletCnt=20
-counter=1
+counter=0
 
 while [ $counter -le $walletCnt ]
 do

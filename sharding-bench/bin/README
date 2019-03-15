@@ -1,0 +1,5 @@
+
+./ontology --enable-consensus --enable-shard-rpc --config solo-config.json --wallet ../wallets/wallet0.dat
+
+./ontology --enable-shard-rpc --config solo-config.json --wallet ../wallets/wallet1.dat
+
