@@ -1,0 +1,10 @@
+{
+  "SeedList": [
+                  "127.0.0.1:20338"
+  ],
+  "ConsensusType":"solo",
+  "solo":{
+          "gen_block_time": 3,
+          "bookkeepers": [ "038bae3eee6fd0a65044bcc2f0bc950dd4666313424f01666ca44edcf9bf20adcd" ]
+  }
+}
