@@ -8,7 +8,7 @@ import (
 	"github.com/ontio/ontology-go-sdk/utils"
 	"github.com/ontio/ontology/common"
 	"github.com/ontio/ontology/common/log"
-	"github.com/ontology-bench/config"
+	"github.com/ontspace/ontology-bench/config"
 	"math"
 	"os"
 	"time"
