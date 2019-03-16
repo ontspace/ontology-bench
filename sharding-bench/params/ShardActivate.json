@@ -1,4 +1,4 @@
 {
-   "Path": "../ontology/wallet.dat",
+   "path": "wallets/wallet1.dat",
    "shard_id": 1
 }

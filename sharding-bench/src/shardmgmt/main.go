@@ -38,22 +38,12 @@ func main() {
 		paramFile = os.Args[3]
 	}
 	sdk := sdk.NewOntologySdk()
-	wallet, err := sdk.OpenWallet(cfg.Wallet)
-	if err != nil {
-		log.Errorf("parse wallet err: %s", err)
-		return
-	}
-	account, err := wallet.GetDefaultAccount([]byte(cfg.Password))
-	if err != nil {
-		log.Errorf("get account err: %s", err)
-		return
-	}
 	rpcClient := client.NewRpcClient()
 	rpcClient.SetAddress(cfg.RootServer)
 	sdk.SetDefaultClient(rpcClient)
 
 	if cmd == SHARD_INIT {
-		if err := ShardInit(sdk, cfg, account); err != nil {
+		if err := ShardInit(sdk, cfg, paramFile); err != nil {
 			log.Errorf("shard init err: %s", err)
 		}
 	} else if cmd == SHARD_CREATE {
