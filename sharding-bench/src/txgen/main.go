@@ -18,10 +18,12 @@ import (
 
 func main() {
 	log.InitLog(log.InfoLog, log.PATH, log.Stdout)
-	configPath := "config.json"
-	if len(os.Args) >= 2 {
-		configPath = os.Args[2]
+	if len(os.Args) < 3 {
+		log.Errorf("missed config file and wallet path")
+		return
 	}
+	configPath := os.Args[1]
+	walletPath := os.Args[2]
 
 	cfg, err := config.ParseConfig(configPath)
 	if err != nil {
@@ -29,7 +31,7 @@ func main() {
 		return
 	}
 
-	wallet, err := sdk.OpenWallet(cfg.Wallet)
+	wallet, err := sdk.OpenWallet(walletPath)
 	if err != nil {
 		log.Errorf("parse wallet err: %s", err)
 		return
@@ -57,7 +59,7 @@ func shardTxTest(cfg *config.Config, account *sdk.Account) {
 			go func(ipaddr string, shardId uint64) {
 				sendTxSdk := sdk.NewOntologySdk()
 				rpcClient := client.NewRpcClient()
-				rpcAddress := fmt.Sprintf("%s:%d", ipaddr, shardId*10+20336)
+				rpcAddress := fmt.Sprintf("http://%s:%d", ipaddr, shardId*10+20336)
 				rpcClient.SetAddress(rpcAddress)
 				sendTxSdk.SetDefaultClient(rpcClient)
 
@@ -70,7 +72,7 @@ func shardTxTest(cfg *config.Config, account *sdk.Account) {
 					time.Sleep(time.Microsecond * 10)
 				}
 				exitChan <- 1
-			}(server, uint64(i*cfg.ShardPerNode+j))
+			}(server, uint64(i*cfg.ShardPerNode+j+1))
 		}
 	}
 	for i := 0; i < routineNum; i++ {
@@ -97,19 +99,10 @@ func sendShardPing(sdk *sdk.OntologySdk, cfg *config.Config, user *sdk.Account, 
 	contractAddress := utils.ShardPingAddress
 	txParam := []interface{}{buf.Bytes()}
 
-	tx, err := sdk.Native.NewNativeInvokeTransaction(cfg.GasPrice, cfg.GasLimit, 0, contractAddress, method, txParam)
-	if err != nil {
-		return err
-	}
-	tx.ShardID = fromShardID
-
-	if err := sdk.SignToTransaction(tx, user); err != nil {
-		return err
-	}
-	txHash, err := sdk.SendTransaction(tx)
+	txHash, err := sdk.Native.InvokeShardNativeContract(fromShardID, cfg.GasPrice, cfg.GasLimit, user, 0, contractAddress, method, txParam)
 	if err != nil {
 		return fmt.Errorf("invokeNativeContract error :", err)
 	}
-	log.Infof("shard send ping txHash is :%s", txHash.ToHexString())
+	log.Infof("shard send shard %d ping txHash is :%s", fromShardID, txHash.ToHexString())
 	return nil
 }

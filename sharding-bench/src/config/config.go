@@ -7,7 +7,6 @@ import (
 )
 
 type Config struct {
-	Wallet            string
 	Password          string
 	ConsensusWalletPath string
 	GasPrice          uint64
