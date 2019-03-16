@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"math"
 	"os"
 	"time"
 
@@ -46,24 +45,18 @@ func main() {
 }
 
 func shardTxTest(cfg *config.Config, account *sdk.Account) {
-	txNum := cfg.TxNum * cfg.ShardPerNode * len(cfg.Rpc)
-	if txNum > math.MaxUint32 {
-		txNum = math.MaxUint32
-	}
 	exitChan := make(chan int)
 	routineNum := len(cfg.Rpc) * cfg.ShardPerNode
-	txNumPerRoutine := txNum / routineNum
-	startTestTime := time.Now().UnixNano() / 1e6
 	for i, server := range cfg.Rpc {
 		for j := 0; j < cfg.ShardPerNode; j++ {
-			go func(ipaddr string, shardId uint64) {
+			go func(ipaddr string, shardId uint64, nTxs int) {
 				sendTxSdk := sdk.NewOntologySdk()
 				rpcClient := client.NewRpcClient()
 				rpcAddress := fmt.Sprintf("http://%s:%d", ipaddr, shardId*10+20336)
 				rpcClient.SetAddress(rpcAddress)
 				sendTxSdk.SetDefaultClient(rpcClient)
 
-				for k := 0; j < txNumPerRoutine; k++ {
+				for k := 0; k < nTxs; k++ {
 					txPayload := fmt.Sprintf("%d", k)
 					if err := sendShardPing(sendTxSdk, cfg, account, shardId, 0, txPayload); err != nil {
 						log.Errorf("send ping to %s, shard %d failed: %s", ipaddr, shardId, err)
@@ -72,14 +65,12 @@ func shardTxTest(cfg *config.Config, account *sdk.Account) {
 					time.Sleep(time.Microsecond * 10)
 				}
 				exitChan <- 1
-			}(server, uint64(i*cfg.ShardPerNode+j+1))
+			}(server, uint64(i*cfg.ShardPerNode+j+1), cfg.TxNum)
 		}
 	}
 	for i := 0; i < routineNum; i++ {
 		<-exitChan
 	}
-	endTestTime := time.Now().UnixNano() / 1e6
-	log.Infof("send tps is %f", float64(txNum*1000)/float64(endTestTime-startTestTime))
 }
 
 func sendShardPing(sdk *sdk.OntologySdk, cfg *config.Config, user *sdk.Account, fromShardID, toShardID uint64, txt string) error {
