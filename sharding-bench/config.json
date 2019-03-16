@@ -5,6 +5,7 @@
   "GasPrice": 500,
   "GasLimit": 20000,
   "ShardPerNode": 20,
+  "RootServer": "10.1.4.27",
   "Rpc": [
     "10.1.4.4",
     "10.1.4.5",

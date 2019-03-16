@@ -13,6 +13,7 @@ type Config struct {
 	GasPrice          uint64
 	GasLimit          uint64
 	ShardPerNode      int
+	RootServer        string
 	Rpc               []string
 	TxNum             int // whole tx num is *TxFactor
 	TPS               int

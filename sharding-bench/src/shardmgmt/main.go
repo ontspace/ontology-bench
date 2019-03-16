@@ -49,7 +49,7 @@ func main() {
 		return
 	}
 	rpcClient := client.NewRpcClient()
-	rpcClient.SetAddress(cfg.Rpc[0])
+	rpcClient.SetAddress(cfg.RootServer)
 	sdk.SetDefaultClient(rpcClient)
 
 	if cmd == SHARD_INIT {
@@ -69,6 +69,9 @@ func main() {
 			log.Errorf("shard peer join err: %s", err)
 		}
 	} else if cmd == SHARD_ACTIVATE {
+		if err := ShardActivate(sdk, cfg, paramFile); err != nil {
+			log.Errorf("shard activate err: %s", err)
+		}
 	} else {
 		log.Errorf("un support cmd")
 		return
