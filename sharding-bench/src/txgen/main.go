@@ -47,6 +47,7 @@ func main() {
 func shardTxTest(cfg *config.Config, account *sdk.Account) {
 	exitChan := make(chan int)
 	routineNum := len(cfg.Rpc) * cfg.ShardPerNode
+	startTime := time.Now()
 	for i, server := range cfg.Rpc {
 		for j := 0; j < cfg.ShardPerNode; j++ {
 			go func(ipaddr string, shardId uint64, nTxs int) {
@@ -57,12 +58,15 @@ func shardTxTest(cfg *config.Config, account *sdk.Account) {
 				sendTxSdk.SetDefaultClient(rpcClient)
 
 				for k := 0; k < nTxs; k++ {
+					startTime := time.Now()
 					txPayload := fmt.Sprintf("%d", k)
 					if err := sendShardPing(sendTxSdk, cfg, account, shardId, 0, txPayload); err != nil {
 						log.Errorf("send ping to %s, shard %d failed: %s", ipaddr, shardId, err)
 						return
 					}
-					time.Sleep(time.Microsecond * 10)
+					if time.Since(startTime) < time.Microsecond {
+						time.Sleep(time.Microsecond - time.Since(startTime))
+					}
 				}
 				exitChan <- 1
 			}(server, uint64(i*cfg.ShardPerNode+j+1), cfg.TxNum)
@@ -71,6 +75,8 @@ func shardTxTest(cfg *config.Config, account *sdk.Account) {
 	for i := 0; i < routineNum; i++ {
 		<-exitChan
 	}
+	tps := routineNum * cfg.TxNum * 1000000 / int(time.Since(startTime).Nanoseconds() / int64(time.Millisecond))
+	log.Errorf("tps: %d.%d", tps/1000, tps%1000)
 }
 
 func sendShardPing(sdk *sdk.OntologySdk, cfg *config.Config, user *sdk.Account, fromShardID, toShardID uint64, txt string) error {
